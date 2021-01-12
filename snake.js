@@ -10,6 +10,8 @@ let framesPerSecond = 1000 / 15;
 let juegoCanvas = document.getElementById("juegoCanvas");
 let ctx = juegoCanvas.getContext("2d");
 
+let ciclo;
+
 let culebra = [
   { posX: 60, posY: 20 },
   { posX: 40, posY: 20 },
@@ -99,7 +101,13 @@ function cicloDeJuego() {
   dibujarCulebra(ctx, culebra);
 }
 
-// FPS per second.
-setInterval(cicloDeJuego, framesPerSecond);
+juegoCanvas.addEventListener("click", function () {
+  if (ciclo === undefined) {
+    ciclo = setInterval(cicloDeJuego, framesPerSecond);
+  } else {
+    stop;
+  }
+});
+
 
 
