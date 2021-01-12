@@ -9,17 +9,18 @@ let juegoCanvas = document.getElementById("juegoCanvas");
 let ctx = juegoCanvas.getContext("2d");
 
 let culebra = [
-  { posX: 20, posY: 0 },
-  { posX: 20, posY: 20 },
-  { posX: 40, posY: 20 },
   { posX: 60, posY: 20 },
+  { posX: 40, posY: 20 },
+  { posX: 20, posY: 20 },
 ]
+
+let direccionActual = DIRECCIONES.DERECHA;
 
 function moverCulebra (nuevaDireccion, culebra) {
   let cabezaPosX = culebra[0].posX;
   let cabezaPosY = culebra[0].posY;
   
-  if (nuevaDireccion === DIRECCIONES.DERECHA) {
+  if (nuevaDireccion === DIRECCIONES.DERECHA ) {
     cabezaPosX += 20;
   } else if (nuevaDireccion === DIRECCIONES.IZQUIERDA) {
     cabezaPosX -= 20;
@@ -70,17 +71,19 @@ dibujarCulebra(ctx, culebra);
 
 document.addEventListener("keydown", function (e) {
   let nuevaDireccion;
-  if (e.code === "ArrowUp") {
+  if (e.code === "ArrowUp" && direccionActual != DIRECCIONES.ABAJO) {
     nuevaDireccion = DIRECCIONES.ARRIBA;
-  } else if (e.code === "ArrowDown") {
+  } else if (e.code === "ArrowDown" && direccionActual != DIRECCIONES.ARRIBA) {
     nuevaDireccion = DIRECCIONES.ABAJO;
-  } else if (e.code === "ArrowLeft") {
+  } else if (e.code === "ArrowLeft" && direccionActual != DIRECCIONES.DERECHA) {
     nuevaDireccion = DIRECCIONES.IZQUIERDA;
-  } else if (e.code === "ArrowRight") {
+  } else if (e.code === "ArrowRight" && direccionActual != DIRECCIONES.IZQUIERDA) {
     nuevaDireccion = DIRECCIONES.DERECHA;
   } else {
     return;
   }
+
+  direccionActual = nuevaDireccion;
 
   moverCulebra(nuevaDireccion, culebra);
 
