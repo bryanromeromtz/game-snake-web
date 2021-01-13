@@ -23,7 +23,7 @@ let culebra = [
 let direccionActual = DIRECCIONES.DERECHA;
 let nuevaDireccion = DIRECCIONES.DERECHA;
 
-let comida = { posX: 160, posY: 100 };
+let comida = generarNuevaPosicionDeComida(culebra);
 
 let ciclo;
 
@@ -58,12 +58,12 @@ function rellenarCuadrado(context, posX, posY) {
 
 function dibujarCulebra(context, culebra) {
   for (let i = 0; i < culebra.length; i++) {
-    rellenarCuadrado(context, culebra[i].posX, culebra[i].posY );
+    rellenarCuadrado(context, culebra[i].posX, culebra[i].posY);
   }
 }
 
 function dibujarComida(context, comida) {
-  rellenarCuadrado(context, comida.posX, comida.posY );
+  rellenarCuadrado(context, comida.posX, comida.posY);
 }
 
 
@@ -72,11 +72,11 @@ function dibujarComida(context, comida) {
 /** CULEBRA **/
 
 
-function moverCulebra (direccion, culebra) {
+function moverCulebra(direccion, culebra) {
   let cabezaPosX = culebra[0].posX;
   let cabezaPosY = culebra[0].posY;
-  
-  if (direccion === DIRECCIONES.DERECHA ) {
+
+  if (direccion === DIRECCIONES.DERECHA) {
     cabezaPosX += 20;
   } else if (direccion === DIRECCIONES.IZQUIERDA) {
     cabezaPosX -= 20;
@@ -86,9 +86,32 @@ function moverCulebra (direccion, culebra) {
     cabezaPosY -= 20;
   }
   // Agregamos la nueva cabeza al principio de la lista.
-  culebra.unshift({posX: cabezaPosX,posY: cabezaPosY});
+  culebra.unshift({ posX: cabezaPosX, posY: cabezaPosY });
   // Borramos la cola de la culebra.
   culebra.pop();
+}
+
+/** COMIDA **/
+
+function generarNuevaPosicionDeComida(culebra) {
+  while (true) {
+    let posX = Math.floor(Math.random() * 29) * 20;
+    let posY = Math.floor(Math.random() * 29) * 20;
+
+    let colisionConCulebra = false;
+    for (let i = 0; i < culebra.length; i++) {
+      if (culebra[i].posX === posX && culebra[i].posY === posY) {
+        colisionConCulebra = true;
+        break;
+      }
+      if (colisionConCulebra) {
+        continue;
+      }
+    }
+
+    return { posX: posX, posY: posY }
+  }
+
 }
 
 
@@ -115,7 +138,7 @@ function cicloDeJuego() {
   CTX.clearRect(0, 0, 600, 600);
   dibujarCuadricula(CTX);
   dibujarCulebra(CTX, culebra);
-  dibujarComida(CTX, comida)
+  dibujarComida(CTX, comida);
 }
 
 dibujarCuadricula(CTX);
@@ -125,7 +148,7 @@ dibujarComida(CTX, comida)
 JUEGO_CANVAS.addEventListener("click", function () {
   if (ciclo === undefined) {
     ciclo = setInterval(cicloDeJuego, FPS);
-  } 
+  }
 });
 
 
