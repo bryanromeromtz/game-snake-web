@@ -88,7 +88,7 @@ function moverCulebra(direccion, culebra) {
   // Agregamos la nueva cabeza al principio de la lista.
   culebra.unshift({ posX: cabezaPosX, posY: cabezaPosY });
   // Borramos la cola de la culebra.
-  culebra.pop();
+  return culebra.pop();
 }
 
 function culebraComioComida(culebra, comida) {
@@ -136,10 +136,12 @@ document.addEventListener("keydown", function (e) {
 });
 
 function cicloDeJuego() {
-  moverCulebra(nuevaDireccion, culebra);
+  let colaDescartada = moverCulebra(nuevaDireccion, culebra);
   direccionActual = nuevaDireccion;
 
   if (culebraComioComida(culebra, comida)) {
+    culebra.push(colaDescartada);
+
     comida = generarNuevaPosicionDeComida(culebra);
   }
 
