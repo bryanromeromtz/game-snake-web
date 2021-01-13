@@ -87,21 +87,11 @@ function culebraComioComida(culebra, comida) {
 /** COMIDA **/
 
 function generarNuevaPosicionDeComida(culebra) {
-  
+
   while (true) {
     let columnaX = Math.max(Math.floor(Math.random() * 29), 1);
     let columnaY = Math.max(Math.floor(Math.random() * 29), 1);
 
-    // En este condicional lo que estamos buscando es que si la columna retorna 0 queremos que retorne 1
-    // para que la comida no se salga de las paredes
-    /*
-    if (columnaX === 0) {
-      columnaX = 1
-    }
-    if (columnaY === 0) {
-      columnaY = 1
-    }
-    */
 
     let posX = columnaX * 20;
     let posY = columnaY * 20;
@@ -122,48 +112,78 @@ function generarNuevaPosicionDeComida(culebra) {
 
 }
 
+/** COLISIONES **/
 
-/** CICLO DE JUEGO **/
+function ocurrioColision(culebra) {
+  let cabeza = culebra[0];
 
-
-document.addEventListener("keydown", function (e) {
-
-  if (e.code === "ArrowUp" && direccionActual != DIRECCIONES.ABAJO) {
-    nuevaDireccion = DIRECCIONES.ARRIBA;
-  } else if (e.code === "ArrowDown" && direccionActual != DIRECCIONES.ARRIBA) {
-    nuevaDireccion = DIRECCIONES.ABAJO;
-  } else if (e.code === "ArrowLeft" && direccionActual != DIRECCIONES.DERECHA) {
-    nuevaDireccion = DIRECCIONES.IZQUIERDA;
-  } else if (e.code === "ArrowRight" && direccionActual != DIRECCIONES.IZQUIERDA) {
-    nuevaDireccion = DIRECCIONES.DERECHA;
-  }
-});
-
-function cicloDeJuego() {
-  let colaDescartada = moverCulebra(nuevaDireccion, culebra);
-  direccionActual = nuevaDireccion;
-
-  if (culebraComioComida(culebra, comida)) {
-    culebra.push(colaDescartada);
-
-    comida = generarNuevaPosicionDeComida(culebra);
+  if (
+    cabeza.posX < 20 ||
+    cabeza.posX === 580 ||
+    cabeza.posY < 20 ||
+    cabeza.posY === 580
+  ) {
+    return true;
   }
 
-  CTX.clearRect(0, 0, 600, 600);
+  if (culebra.length === 4) {
+    return false;
+  }
+  for (let i = 1; i < culebra.length; i++) {
+    if (cabeza.posX === culebra[i].posX && cabeza.posY === culebra[i].posY) {
+      return true;
+    }
+  }
+  return false;
+  }
+
+  /** CICLO DE JUEGO **/
+
+
+  document.addEventListener("keydown", function (e) {
+
+    if (e.code === "ArrowUp" && direccionActual != DIRECCIONES.ABAJO) {
+      nuevaDireccion = DIRECCIONES.ARRIBA;
+    } else if (e.code === "ArrowDown" && direccionActual != DIRECCIONES.ARRIBA) {
+      nuevaDireccion = DIRECCIONES.ABAJO;
+    } else if (e.code === "ArrowLeft" && direccionActual != DIRECCIONES.DERECHA) {
+      nuevaDireccion = DIRECCIONES.IZQUIERDA;
+    } else if (e.code === "ArrowRight" && direccionActual != DIRECCIONES.IZQUIERDA) {
+      nuevaDireccion = DIRECCIONES.DERECHA;
+    }
+  });
+
+  function cicloDeJuego() {
+    let colaDescartada = moverCulebra(nuevaDireccion, culebra);
+    direccionActual = nuevaDireccion;
+
+    if (culebraComioComida(culebra, comida)) {
+      culebra.push(colaDescartada);
+
+      comida = generarNuevaPosicionDeComida(culebra);
+    }
+
+    if (ocurrioColision(culebra)) {
+      clearInterval(ciclo);
+      return;
+    }
+
+    CTX.clearRect(0, 0, 600, 600);
+    dibujarParedes(CTX);
+    dibujarCulebra(CTX, culebra);
+    dibujarComida(CTX, comida);
+
+  }
+
   dibujarParedes(CTX);
   dibujarCulebra(CTX, culebra);
-  dibujarComida(CTX, comida);
-}
+  dibujarComida(CTX, comida)
 
-dibujarParedes(CTX);
-dibujarCulebra(CTX, culebra);
-dibujarComida(CTX, comida)
-
-JUEGO_CANVAS.addEventListener("click", function () {
-  if (ciclo === undefined) {
-    ciclo = setInterval(cicloDeJuego, FPS);
-  }
-});
+  JUEGO_CANVAS.addEventListener("click", function () {
+    if (ciclo === undefined) {
+      ciclo = setInterval(cicloDeJuego, FPS);
+    }
+  });
 
 
 
