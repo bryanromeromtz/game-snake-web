@@ -91,6 +91,10 @@ function moverCulebra(direccion, culebra) {
   culebra.pop();
 }
 
+function culebraComioComida(culebra, comida) {
+  return culebra[0].posX === comida.posX && culebra[0].posY === comida.posY;
+}
+
 /** COMIDA **/
 
 function generarNuevaPosicionDeComida(culebra) {
@@ -134,6 +138,10 @@ document.addEventListener("keydown", function (e) {
 function cicloDeJuego() {
   moverCulebra(nuevaDireccion, culebra);
   direccionActual = nuevaDireccion;
+
+  if (culebraComioComida(culebra, comida)) {
+    comida = generarNuevaPosicionDeComida(culebra);
+  }
 
   CTX.clearRect(0, 0, 600, 600);
   dibujarCuadricula(CTX);
