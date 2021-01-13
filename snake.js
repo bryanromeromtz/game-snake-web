@@ -1,3 +1,5 @@
+/** CONSTANTES **/
+
 let DIRECCIONES = {
   ARRIBA: 1,
   ABAJO: 2,
@@ -5,12 +7,12 @@ let DIRECCIONES = {
   DERECHA: 4
 };
 
-let framesPerSecond = 1000 / 15;
+let FPS = 1000 / 15;
 
-let juegoCanvas = document.getElementById("juegoCanvas");
-let ctx = juegoCanvas.getContext("2d");
+let JUEGO_CANVAS = document.getElementById("juegoCanvas");
+let CTX = JUEGO_CANVAS.getContext("2d");
 
-let ciclo;
+/** ESTADO DEL JUEGO **/
 
 let culebra = [
   { posX: 60, posY: 20 },
@@ -20,6 +22,54 @@ let culebra = [
 
 let direccionActual = DIRECCIONES.DERECHA;
 let nuevaDireccion = DIRECCIONES.DERECHA;
+
+let comida = { posX: 160, posY: 100 };
+
+let ciclo;
+
+
+/** DIBUJAR **/
+
+function dibujarCuadricula(context) {
+  for (let x = 20; x <= 600; x += 20) {
+    context.beginPath();
+    context.fillStyle = "black";
+    context.moveTo(x, 0);
+    context.lineTo(x, 600);
+    context.stroke();
+  }
+
+  for (let y = 20; y <= 600; y += 20) {
+    context.beginPath();
+    context.fillStyle = "black";
+    context.moveTo(0, y);
+    context.lineTo(600, y);
+    context.stroke();
+  }
+}
+
+function rellenarCuadrado(context, posX, posY) {
+  context.beginPath();
+  context.fillStyle = "black";
+  context.fillRect(posX, posY, 20, 20);
+  context.stroke();
+}
+
+
+function dibujarCulebra(context, culebra) {
+  for (let i = 0; i < culebra.length; i++) {
+    rellenarCuadrado(context, culebra[i].posX, culebra[i].posY );
+  }
+}
+
+function dibujarComida(context, comida) {
+  rellenarCuadrado(context, comida.posX, comida.posY );
+}
+
+
+
+
+/** CULEBRA **/
 
 
 function moverCulebra (direccion, culebra) {
@@ -41,38 +91,8 @@ function moverCulebra (direccion, culebra) {
   culebra.pop();
 }
 
-function dibujarCuadricula(context) {
-  for (let x = 20; x <= 600; x += 20) {
-    context.beginPath();
-    context.fillStyle = "black";
-    context.moveTo(x, 0);
-    context.lineTo(x, 600);
-    context.stroke();
-  }
 
-  for (let y = 20; y <= 600; y += 20) {
-    context.beginPath();
-    context.fillStyle = "black";
-    context.moveTo(0, y);
-    context.lineTo(600, y);
-    context.stroke();
-  }
-}
-
-
-function dibujarCulebra(context, culebra) {
-  
-  for (let i = 0; i < culebra.length; i++) {
-    context.beginPath();
-    context.fillStyle = "black";
-    context.fillRect(culebra[i].posX, culebra[i].posY, 20, 20);
-    context.stroke();
-  }
-}
-
-dibujarCuadricula(ctx);
-
-dibujarCulebra(ctx, culebra);
+/** CICLO DE JUEGO **/
 
 
 document.addEventListener("keydown", function (e) {
@@ -91,14 +111,20 @@ document.addEventListener("keydown", function (e) {
 function cicloDeJuego() {
   moverCulebra(nuevaDireccion, culebra);
   direccionActual = nuevaDireccion;
-  ctx.clearRect(0, 0, 600, 600);
-  dibujarCuadricula(ctx);
-  dibujarCulebra(ctx, culebra);
+
+  CTX.clearRect(0, 0, 600, 600);
+  dibujarCuadricula(CTX);
+  dibujarCulebra(CTX, culebra);
+  dibujarComida(CTX, comida)
 }
 
-juegoCanvas.addEventListener("click", function () {
+dibujarCuadricula(CTX);
+dibujarCulebra(CTX, culebra);
+dibujarComida(CTX, comida)
+
+JUEGO_CANVAS.addEventListener("click", function () {
   if (ciclo === undefined) {
-    ciclo = setInterval(cicloDeJuego, framesPerSecond);
+    ciclo = setInterval(cicloDeJuego, FPS);
   } 
 });
 
