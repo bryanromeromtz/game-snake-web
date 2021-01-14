@@ -8,18 +8,21 @@ let DIRECCIONES = {
 };
 
 let FPS = 1000 / 15;
- 
+
 let JUEGO_CANVAS = document.getElementById("juegoCanvas");
 let CTX = JUEGO_CANVAS.getContext("2d");
 
 let PUNTAJE_TEXTO = document.getElementById("puntuacion");
 
+let SONIDO_GANASTE_PUNTO = new Audio("sonidosDelJuego/comida.mp3");
+let SONIDO_COLISION = new Audio("sonidosDelJuego/gameover.mp3");
+
 
 /** ESTADO DEL JUEGO **/
 
-let culebra ;
+let culebra;
 let direccionActual;
-let nuevaDireccion ;
+let nuevaDireccion;
 let comida;
 let ciclo;
 let puntaje;
@@ -142,90 +145,97 @@ function ocurrioColision(culebra) {
     }
   }
   return false;
-  }
+}
 
-  /** PUNTAJE **/
+/** PUNTAJE **/
 
-function mostrarPuntaje (puntaje) {
+function mostrarPuntaje(puntaje) {
   PUNTAJE_TEXTO.innerText = `PUNTAJE: ${puntaje}`;
 }
 
-function incrementarPuntaje () {
+function incrementarPuntaje() {
   puntaje++;
   mostrarPuntaje(puntaje);
-  
+  SONIDO_GANASTE_PUNTO.play();
 }
 
 
-  /** CICLO DE JUEGO **/
+/** CICLO DE JUEGO **/
 
 
-  document.addEventListener("keydown", function (e) {
+document.addEventListener("keydown", function (e) {
 
-    if (e.code === "ArrowUp" && direccionActual != DIRECCIONES.ABAJO) {
-      nuevaDireccion = DIRECCIONES.ARRIBA;
-    } else if (e.code === "ArrowDown" && direccionActual != DIRECCIONES.ARRIBA) {
-      nuevaDireccion = DIRECCIONES.ABAJO;
-    } else if (e.code === "ArrowLeft" && direccionActual != DIRECCIONES.DERECHA) {
-      nuevaDireccion = DIRECCIONES.IZQUIERDA;
-    } else if (e.code === "ArrowRight" && direccionActual != DIRECCIONES.IZQUIERDA) {
-      nuevaDireccion = DIRECCIONES.DERECHA;
-    }
-  });
-
-  function cicloDeJuego() {
-    let colaDescartada = moverCulebra(nuevaDireccion, culebra);
-    direccionActual = nuevaDireccion;
-
-    if (culebraComioComida(culebra, comida)) {
-      culebra.push(colaDescartada);
-
-      comida = generarNuevaPosicionDeComida(culebra);
-      incrementarPuntaje();
-    }
-
-    if (ocurrioColision(culebra)) {
-      clearInterval(ciclo);
-      ciclo = undefined;
-      return;
-    }
-
-    
-    CTX.clearRect(0, 0, 600, 600);
-    dibujarParedes(CTX);
-    dibujarCulebra(CTX, culebra);
-    dibujarComida(CTX, comida);
-  }
-
-  function empezarJuego(params) {
-    culebra = [
-      { posX: 60, posY: 20 },
-      { posX: 40, posY: 20 }
-     // { posX: 20, posY: 20 },
-    ]
-    
-    direccionActual = DIRECCIONES.DERECHA;
+  if (e.code === "ArrowUp" && direccionActual != DIRECCIONES.ABAJO) {
+    nuevaDireccion = DIRECCIONES.ARRIBA;
+  } else if (e.code === "ArrowDown" && direccionActual != DIRECCIONES.ARRIBA) {
+    nuevaDireccion = DIRECCIONES.ABAJO;
+  } else if (e.code === "ArrowLeft" && direccionActual != DIRECCIONES.DERECHA) {
+    nuevaDireccion = DIRECCIONES.IZQUIERDA;
+  } else if (e.code === "ArrowRight" && direccionActual != DIRECCIONES.IZQUIERDA) {
     nuevaDireccion = DIRECCIONES.DERECHA;
-    
+  }
+});
+
+function cicloDeJuego() {
+  let colaDescartada = moverCulebra(nuevaDireccion, culebra);
+  direccionActual = nuevaDireccion;
+
+  if (culebraComioComida(culebra, comida)) {
+    culebra.push(colaDescartada);
+
     comida = generarNuevaPosicionDeComida(culebra);
-    puntaje = 0 ;
-    mostrarPuntaje(puntaje);
-    ciclo = setInterval(cicloDeJuego, FPS);
+    incrementarPuntaje();
+  }
+
+  if (ocurrioColision(culebra)) {
+    gameOver();
+    SONIDO_COLISION.play();
+    return;
+  }
+
+  function gameOver() {
+    clearInterval(ciclo);
+    ciclo = undefined;
+    dibujarTexto(CTX, "¡Fin del juego!", "40px Arial", 300, 260);
+    dibujarTexto(CTX, "Click para volver a jugar", "40px Arial", 300, 310);
   }
 
 
+  CTX.clearRect(0, 0, 600, 600);
   dibujarParedes(CTX);
-  dibujarTexto(CTX, "¡CLICK PARA COMENZAR!", "40px Arial", 300, 260);
-  dibujarTexto(CTX, "MUEVETE CON ↑ ↓ → ←", "40px Arial", 300, 310);
+  dibujarCulebra(CTX, culebra);
+  dibujarComida(CTX, comida);
+}
 
-  
+function empezarJuego(params) {
+  culebra = [
+    { posX: 60, posY: 20 },
+    { posX: 40, posY: 20 }
+    // { posX: 20, posY: 20 },
+  ]
 
-  JUEGO_CANVAS.addEventListener("click", function () {
-    if (ciclo === undefined) {
-      empezarJuego();
-    }
+  direccionActual = DIRECCIONES.DERECHA;
+  nuevaDireccion = DIRECCIONES.DERECHA;
 
-  });
+  comida = generarNuevaPosicionDeComida(culebra);
+  puntaje = 0;
+  mostrarPuntaje(puntaje);
+  ciclo = setInterval(cicloDeJuego, FPS);
+}
+
+
+dibujarParedes(CTX);
+dibujarTexto(CTX, "¡Click para comenzar!", "40px Arial", 300, 260);
+dibujarTexto(CTX, "Muevete con ↑ ↓ → ←", "40px Arial", 300, 310);
+
+
+
+JUEGO_CANVAS.addEventListener("click", function () {
+  if (ciclo === undefined) {
+    empezarJuego();
+  }
+
+});
 
 
 
