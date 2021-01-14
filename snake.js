@@ -12,6 +12,9 @@ let FPS = 1000 / 15;
 let JUEGO_CANVAS = document.getElementById("juegoCanvas");
 let CTX = JUEGO_CANVAS.getContext("2d");
 
+let PUNTAJE_TEXTO = document.getElementById("puntuacion");
+
+
 /** ESTADO DEL JUEGO **/
 
 let culebra = [
@@ -26,6 +29,8 @@ let nuevaDireccion = DIRECCIONES.DERECHA;
 let comida = generarNuevaPosicionDeComida(culebra);
 
 let ciclo;
+
+let puntaje = 0 ;
 
 
 /** DIBUJAR **/
@@ -137,6 +142,18 @@ function ocurrioColision(culebra) {
   return false;
   }
 
+  /** PUNTAJE **/
+
+function mostrarPuntajeActual (puntaje) {
+  PUNTAJE_TEXTO.innerText = `PUNTAJE: ${puntaje}`;
+}
+
+function incrementarPuntaje () {
+  puntaje++;
+  mostrarPuntajeActual(puntaje);
+}
+
+
   /** CICLO DE JUEGO **/
 
 
@@ -161,6 +178,7 @@ function ocurrioColision(culebra) {
       culebra.push(colaDescartada);
 
       comida = generarNuevaPosicionDeComida(culebra);
+      incrementarPuntaje();
     }
 
     if (ocurrioColision(culebra)) {
