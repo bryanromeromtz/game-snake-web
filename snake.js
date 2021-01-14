@@ -8,7 +8,7 @@ let DIRECCIONES = {
 };
 
 let FPS = 1000 / 15;
-
+ 
 let JUEGO_CANVAS = document.getElementById("juegoCanvas");
 let CTX = JUEGO_CANVAS.getContext("2d");
 
@@ -29,6 +29,7 @@ let puntaje;
 
 function dibujarParedes(context) {
   context.beginPath();
+  context.setLineDash([5, 3]);
   context.lineWidth = "2";
   context.rect(20, 20, 560, 560);
   context.stroke();
@@ -52,7 +53,16 @@ function dibujarComida(context, comida) {
   rellenarCuadrado(context, comida.posX, comida.posY);
 }
 
+function dibujarTexto(context, texto, font, posX, posY) {
+  context.font = `${font}`;
+  context.textAlign = "center";
+  context.fillStyle = "black";
+  context.fillText(texto, posX, posY);
+}
 
+function dibujarTextoFlechas(context) {
+  context.font = "40px Arial";
+}
 
 
 /** CULEBRA **/
@@ -180,6 +190,7 @@ function incrementarPuntaje () {
       return;
     }
 
+    
     CTX.clearRect(0, 0, 600, 600);
     dibujarParedes(CTX);
     dibujarCulebra(CTX, culebra);
@@ -189,8 +200,8 @@ function incrementarPuntaje () {
   function empezarJuego(params) {
     culebra = [
       { posX: 60, posY: 20 },
-      { posX: 40, posY: 20 },
-      { posX: 20, posY: 20 },
+      { posX: 40, posY: 20 }
+     // { posX: 20, posY: 20 },
     ]
     
     direccionActual = DIRECCIONES.DERECHA;
@@ -202,7 +213,12 @@ function incrementarPuntaje () {
     ciclo = setInterval(cicloDeJuego, FPS);
   }
 
+
   dibujarParedes(CTX);
+  dibujarTexto(CTX, "¡CLICK PARA COMENZAR!", "40px Arial", 300, 260);
+  dibujarTexto(CTX, "MUEVETE CON ↑ ↓ → ←", "40px Arial", 300, 310);
+
+  
 
   JUEGO_CANVAS.addEventListener("click", function () {
     if (ciclo === undefined) {
