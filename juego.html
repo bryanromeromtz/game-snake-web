@@ -1,14 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8" >
-  <meta name="viewport" content="width=device-width, user-scalable=0" >
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=0">
   <link rel="stylesheet" href="juego.css">
   <title>GAMEBOY-SNAKE</title>
 </head>
+
 <body>
-  <div id="puntuacion">PUNTAJE: 0</div>
-  <canvas id="juegoCanvas" width="600" height="600"></canvas>
+
+  <div id="titulo">DEV BY ©BRYAN KIDULT</div>
+
+  <div id="contenedorJuego">
+    <div id="contenedorNintendo">
+      <div id="puntuacion">PUNTAJE: 0</div>
+      <div id="canvasOverlay">
+        <img id="nintendo" src="imagenNintendo/nintendo.png" alt="Imagen nintendo game-boy">
+        <canvas id="juegoCanvas" width="600" height="600"></canvas>
+      </div>
+    </div>
+  </div>
   <script src="snake.js"></script>
 </body>
+
 </html>
