@@ -33,14 +33,14 @@ let puntaje;
 function dibujarParedes(context) {
   context.beginPath();
   context.setLineDash([5, 3]);
-  context.lineWidth = "2";
+  context.lineWidth = "5";
   context.rect(20, 20, 560, 560);
   context.stroke();
 }
 
 function rellenarCuadrado(context, posX, posY) {
   context.beginPath();
-  context.fillStyle = "black";
+  context.fillStyle = "#2e490b";
   context.fillRect(posX, posY, 20, 20);
   context.stroke();
 }
@@ -236,6 +236,3 @@ JUEGO_CANVAS.addEventListener("click", function () {
   }
 
 });
-
-
-
