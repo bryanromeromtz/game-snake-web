@@ -9,11 +9,19 @@
 </head>
 
 <body>
-  <div id="titulo">GAME-BOY SNAKE BY BRYAN KIDULT</div>
+
+  <div id="titulo" class="text-flicker-in-glow">
+    GAME-BOY SNAKE BY BRYAN KIDULT
+  </div>
+
+  <div id="bannerRotarTelefono" class="esconder rotate-in-hor">
+    <div>Usa tu teléfono en modo vertical para jugar</div>
+    <button id="botonCerrarBanner" onclick="cerrarBanner()">OK</button>
+  </div>
 
   <div id="contenedorJuego">
     <div id="contenedorNintendo">
-      <div id="puntuacion">PUNTAJE: 0</div>
+      <div id="puntuacion" class="text-shadow-pop-left">PUNTAJE: 0</div>
       <div id="canvasOverlay">
         <img id="nintendo" src="imagenNintendo/nintendo.png" alt="Imagen nintendo game-boy">
         <canvas id="juegoCanvas" width="600" height="600"></canvas>

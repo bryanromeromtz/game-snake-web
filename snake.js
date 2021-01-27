@@ -14,8 +14,15 @@ let CTX = JUEGO_CANVAS.getContext("2d");
 
 let PUNTAJE_TEXTO = document.getElementById("puntuacion");
 
+let BANNER_ROTAR_TELEFONO = document.querySelector('#bannerRotarTelefono');
+let TITULO = document.querySelector('#titulo');
+let CSS_CLASS_ESCONDER = 'esconder';
+
+let SONIDO_JUEGO_BUCLE = new Audio("sonidosDelJuego/retro-atari-demo.mp3");
 let SONIDO_GANASTE_PUNTO = new Audio("sonidosDelJuego/comida.mp3");
 let SONIDO_COLISION = new Audio("sonidosDelJuego/gameover.mp3");
+
+let CONTENEDOR_NINTENDO = document.getElementById('contenedorNintendo');
 
 
 /** ESTADO DEL JUEGO **/
@@ -32,8 +39,8 @@ let puntaje;
 
 function dibujarParedes(context) {
   context.beginPath();
-  context.setLineDash([5, 3]);
-  context.lineWidth = "5";
+  //context.setLineDash([5, 3]);
+  context.lineWidth = "2";
   context.rect(20, 20, 560, 560);
   context.stroke();
 }
@@ -159,6 +166,20 @@ function incrementarPuntaje() {
   SONIDO_GANASTE_PUNTO.play();
 }
 
+/** RESPONSIVE  **/
+window.addEventListener('orientationchange', function () {
+  TITULO.classList.add(CSS_CLASS_ESCONDER);
+
+  BANNER_ROTAR_TELEFONO.classList.remove(CSS_CLASS_ESCONDER);
+  
+})
+
+function cerrarBanner () {
+  BANNER_ROTAR_TELEFONO.classList.add(CSS_CLASS_ESCONDER);
+  TITULO.classList.remove(CSS_CLASS_ESCONDER);
+}
+
+
 
 /** CICLO DE JUEGO **/
 
@@ -194,10 +215,15 @@ function cicloDeJuego() {
   }
 
   function gameOver() {
+    CONTENEDOR_NINTENDO.classList.add('shake-lr');
+    SONIDO_JUEGO_BUCLE.pause();
+    SONIDO_JUEGO_BUCLE.currentTime = 0;
+
     clearInterval(ciclo);
     ciclo = undefined;
     dibujarTexto(CTX, "¡Fin del juego!", "40px Arial", 300, 260);
     dibujarTexto(CTX, "Click para volver a jugar", "40px Arial", 300, 310);
+    
   }
 
 
@@ -207,7 +233,7 @@ function cicloDeJuego() {
   dibujarComida(CTX, comida);
 }
 
-function empezarJuego(params) {
+function empezarJuego() {
   culebra = [
     { posX: 60, posY: 20 },
     { posX: 40, posY: 20 }
@@ -217,22 +243,44 @@ function empezarJuego(params) {
   direccionActual = DIRECCIONES.DERECHA;
   nuevaDireccion = DIRECCIONES.DERECHA;
 
+
   comida = generarNuevaPosicionDeComida(culebra);
   puntaje = 0;
   mostrarPuntaje(puntaje);
+  CONTENEDOR_NINTENDO.classList.remove('shake-lr');
   ciclo = setInterval(cicloDeJuego, FPS);
+
+  
+
+
 }
 
 
 dibujarParedes(CTX);
-dibujarTexto(CTX, "¡Click para comenzar!", "40px Arial", 300, 260);
-dibujarTexto(CTX, "Muevete con ↑ ↓ → ←", "40px Arial", 300, 310);
+dibujarTexto(CTX, "¡Click para comenzar!", "38px Arial", 300, 260);
+dibujarTexto(CTX, "Desktop:Muevete con ↑ ↓ → ←", "38px Arial", 300, 310);
+dibujarTexto(CTX, "Móvil:Tap para girar a la culebra", "38px Arial", 300, 360);
+
+
 
 
 
 JUEGO_CANVAS.addEventListener("click", function () {
   if (ciclo === undefined) {
     empezarJuego();
+    SONIDO_JUEGO_BUCLE.play();
+    return;
   }
 
+  //estos serian los controles para movil 
+  /*
+  if (direccionActual === DIRECCIONES.ABAJO) {
+    nuevaDireccion = DIRECCIONES.IZQUIERDA;
+  } else if (direccionActual === DIRECCIONES.IZQUIERDA) {
+    nuevaDireccion = DIRECCIONES.ARRIBA;
+  } else if (direccionActual === DIRECCIONES.ARRIBA) {
+    nuevaDireccion = DIRECCIONES.DERECHA;
+  } else if (direccionActual === DIRECCIONES.DERECHA) {
+    nuevaDireccion = DIRECCIONES.ABAJO;
+  }*/
 });
